@@ -4,11 +4,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 // 引入 路由注入组件
 import { RouterProvider } from "react-router-dom";
+// 引入 状态管理库注入组件
+import { Provider } from "react-redux";
 
-// 引入 App 组件
-// import App from "./App";
 // 引入 路由
-import router from "./router";
+import router from "@/router";
+// 引入 状态管理库
+import store from "@/store";
 
 const root = ReactDOM.createRoot(document.querySelector(".root"));
-root.render(<RouterProvider router={router} />);
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </React.StrictMode>
+);
