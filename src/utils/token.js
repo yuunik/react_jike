@@ -15,5 +15,5 @@ export const _removeToken = () => {
 
 // 查询 token
 export const _getToken = () => {
-    localStorage.getItem(TOKEN_KEY)
+    return localStorage.getItem(TOKEN_KEY)
 }
