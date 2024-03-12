@@ -12,6 +12,11 @@ import router from "@/router";
 // 引入 状态管理库
 import store from "@/store";
 
+// 引入 重置样式
+import "normalize.css";
+// 引入 初始样式
+import "@/index.scss";
+
 const root = ReactDOM.createRoot(document.querySelector(".root"));
 root.render(
   <React.StrictMode>
