@@ -1,5 +1,5 @@
-import './index.scss'
 import { Card, Form, Input, Button } from 'antd'
+import './index.scss'
 import logo from '@/assets/logo.png'
 
 const Login = () => {
@@ -8,11 +8,34 @@ const Login = () => {
       <Card className="login-container">
         <img className="login-logo" src={logo} alt="" />
         {/* 登录表单 */}
-        <Form>
-          <Form.Item>
+        <Form validateTrigger="onBlur">
+          <Form.Item 
+            name="phone-number" 
+            rules={[
+                {
+                    required: true,
+                    message: "手机号码不能为空!"
+                },
+                {
+                    pattern: /^1[3-9]\d{9}$/,
+                    message: "请输入11位的手机号码!"
+                }
+            ]}
+          >
             <Input size="large" placeholder="请输入手机号" />
           </Form.Item>
-          <Form.Item>
+          <Form.Item 
+            name="sms-code" 
+            rules={[
+                {
+                    required: true,
+                    message: "验证码不能为空!"
+                },
+                {
+                    pattern: /^[0-9]\d{5}$/,
+                    message: "请输入6位的验证码!"
+                }
+            ]}>
             <Input size="large" placeholder="请输入验证码" />
           </Form.Item>
           <Form.Item>
