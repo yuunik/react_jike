@@ -5,17 +5,20 @@ const userStore = createSlice({
   name: "userStore",
   // 状态初始化
   initialState: {
-    token: "",
+    token: localStorage.getItem("token") || "",
   },
   reducers: {
     // 设置 token
     setToken: (state, action) => {
       state.token = action.payload;
+      // token 持久化
+      localStorage.setItem("token", action.payload);
     },
   },
 });
 
 const { setToken } = userStore.actions;
+
 /* 异步 actions */
 // 完成登录获取 token
 const login = (data) => {
