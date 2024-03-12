@@ -1,33 +1,42 @@
-import { Layout, Menu, Popconfirm } from 'antd'
+import { Layout, Menu, Popconfirm } from "antd";
 import {
   HomeOutlined,
   DiffOutlined,
   EditOutlined,
   LogoutOutlined,
-} from '@ant-design/icons'
-import './index.scss'
+} from "@ant-design/icons";
+import { Outlet, useNavigate } from "react-router-dom";
+import "./index.scss";
 
-const { Header, Sider } = Layout
+const { Header, Sider } = Layout;
 
 const items = [
   {
-    label: '首页',
-    key: '1',
+    label: "首页",
+    key: "home",
     icon: <HomeOutlined />,
   },
   {
-    label: '文章管理',
-    key: '2',
+    label: "文章管理",
+    key: "article",
     icon: <DiffOutlined />,
   },
   {
-    label: '创建文章',
-    key: '3',
+    label: "创建文章",
+    key: "publish",
     icon: <EditOutlined />,
   },
-]
+];
 
 const GeekLayout = () => {
+  const navigate = useNavigate();
+
+  // 菜单点击事件的回调
+  const changeMenu = ({ key }) => {
+    // 跳转二级路由
+    navigate(key);
+  };
+
   return (
     <Layout>
       <Header className="header">
@@ -46,15 +55,18 @@ const GeekLayout = () => {
           <Menu
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={["home"]}
             items={items}
-            style={{ height: '100%', borderRight: 0 }}></Menu>
+            style={{ height: "100%", borderRight: 0 }}
+            onClick={changeMenu}
+          ></Menu>
         </Sider>
         <Layout className="layout-content" style={{ padding: 20 }}>
-          内容
+          {/* 路由出口 */}
+          <Outlet />
         </Layout>
       </Layout>
     </Layout>
-  )
-}
-export default GeekLayout
+  );
+};
+export default GeekLayout;
