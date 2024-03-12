@@ -3,14 +3,19 @@ import './index.scss'
 import logo from '@/assets/logo.png'
 
 const Login = () => {
+  // 提交表单
+  const onSubmit = (values) => {
+    console.log(values);
+  }  
+
   return (
     <div className="login">
       <Card className="login-container">
         <img className="login-logo" src={logo} alt="" />
         {/* 登录表单 */}
-        <Form validateTrigger="onBlur">
+        <Form validateTrigger="onBlur" onFinish={ onSubmit }>
           <Form.Item 
-            name="phone-number" 
+            name="mobile" 
             rules={[
                 {
                     required: true,
@@ -25,7 +30,7 @@ const Login = () => {
             <Input size="large" placeholder="请输入手机号" />
           </Form.Item>
           <Form.Item 
-            name="sms-code" 
+            name="code" 
             rules={[
                 {
                     required: true,
