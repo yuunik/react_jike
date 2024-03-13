@@ -17,3 +17,12 @@ export const addArticleAPI = (data) => {
     data
   })
 }
+
+// 获取文章列表
+export const getArticleListAPI = (params) => {
+  return request({
+    url: "/mp/articles",
+    method: 'get',
+    params
+  })
+}

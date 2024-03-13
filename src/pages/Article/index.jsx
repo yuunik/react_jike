@@ -14,8 +14,11 @@ import locale from "antd/es/date-picker/locale/zh_CN";
 import { Table, Tag, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/error.png";
-import useArticleChannel from "@/hooks/useArticleChannel";
 import { nanoid } from "nanoid";
+import { useEffect, useState } from "react";
+import { getArticleListAPI } from "@/apis/article";
+
+import useArticleChannel from "@/hooks/useArticleChannel";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -76,24 +79,28 @@ const Article = () => {
       },
     },
   ];
-  // 准备表格body数据
-  const data = [
-    {
-      id: "8218",
-      comment_count: 0,
-      cover: {
-        images: [],
-      },
-      like_count: 0,
-      pubdate: "2019-03-11 09:00:00",
-      read_count: 2,
-      status: 2,
-      title: "wkwebview离线化加载h5资源解决方案",
-    },
-  ];
 
   // 获取文章频道列表
   const { articleChannelList } = useArticleChannel();
+
+  // 文章列表
+  const [articleList, setArticleList] = useState([]);
+
+  // 文章总数
+  const [articleCount, setArticleCount] = useState(0);
+
+  // 组件挂载时调用
+  useEffect(() => {
+    const getArticleList = async () => {
+      // 调用接口, 获取文章列表
+      const result = await getArticleListAPI();
+      // 保存文章列表
+      setArticleList(result.data.results);
+      // 保存文章总数
+      setArticleCount(result.data.total_count);
+    };
+    getArticleList();
+  }, []);
 
   return (
     <div>
@@ -118,10 +125,7 @@ const Article = () => {
           </Form.Item>
 
           <Form.Item label="频道" name="channel_id">
-            <Select
-              placeholder="请选择文章频道"
-              style={{ width: 120 }}
-            >
+            <Select placeholder="请选择文章频道" style={{ width: 120 }}>
               {articleChannelList.map((channel) => (
                 <Option key={nanoid()} value={channel.id}>
                   {channel.name}
@@ -143,8 +147,8 @@ const Article = () => {
         </Form>
       </Card>
       {/* 表格区域 */}
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={data} />
+      <Card title={`根据筛选条件共查询到 ${articleCount} 条结果：`}>
+        <Table rowKey="id" columns={columns} dataSource={articleList} />
       </Card>
     </div>
   );
