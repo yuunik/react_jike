@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { request } from "@/utils";
+import { _removeToken, request } from "@/utils";
 import { _setToken, _getToken } from "@/utils";
 
 const userStore = createSlice({
@@ -22,10 +22,19 @@ const userStore = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    // 清除用户信息
+    clearUserInfo: (state) => {
+      // 清空 token
+      state.token = ''
+      // 清空 用户信息
+      state.userInfo = {}
+      // 清空浏览器本地存储
+      _removeToken()
+    }
   },
 });
 
-const { setToken, setUserInfo } = userStore.actions;
+const { setToken, setUserInfo, clearUserInfo } = userStore.actions;
 
 /* 异步 actions */
 // 完成登录获取 token
@@ -54,7 +63,7 @@ const getUserInfo = () => {
 };
 
 // 导出 actions
-export { login, getUserInfo };
+export { login, getUserInfo, clearUserInfo };
 
 const userReducer = userStore.reducer;
 // 导出 reducer
