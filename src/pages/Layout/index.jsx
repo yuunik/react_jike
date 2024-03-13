@@ -6,14 +6,11 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { getUserInfo, clearUserInfo } from "@/store/modules/user";
-import { _removeToken } from "@/utils";
 
 import "./index.scss";
-import { clear } from "@testing-library/user-event/dist/clear";
 
 const { Header, Sider } = Layout;
 

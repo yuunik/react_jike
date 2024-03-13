@@ -12,32 +12,20 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import ReactQuill from "react-quill";
 import { nanoid } from "nanoid";
 import "react-quill/dist/quill.snow.css";
 
+import { addArticleAPI } from "@/apis/article";
+import useArticleChannel from '@/hooks/useArticleChannel'
 import "./index.scss";
-import { addArticleAPI, getArticleChannelListAPI } from "@/apis/article";
 
 const { Option } = Select;
 
 const Publish = () => {
   const navigate = useNavigate();
-
-  // 文章频道列表
-  const [articleChannelList, setArticleChannelList] = useState([]);
-
-  // 组件挂载时调用
-  useEffect(() => {
-    const getArticleChannelList = async () => {
-      // 调用接口, 获取文章频道列表
-      const result = await getArticleChannelListAPI();
-      // 保存文章频道列表
-      setArticleChannelList(result.data.channels);
-    };
-    getArticleChannelList();
-  }, []);
+  const { articleChannelList } = useArticleChannel()
 
   // 提交表单的回调
   const onSubmit = async (data) => {
