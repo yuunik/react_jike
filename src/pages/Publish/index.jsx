@@ -11,15 +11,29 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
+import { nanoid } from "nanoid";
 import "react-quill/dist/quill.snow.css";
 
 import "./index.scss";
+import { getArticleChannelListAPI } from "@/apis/article";
 
 const { Option } = Select;
 
 const Publish = () => {
+  // 文章频道列表
+  const [articleChannelList, setArticleChannelList] = useState([]);
+
+  // 组件挂载时调用
+  useEffect(() => {
+    return async () => {
+      const result = await getArticleChannelListAPI();
+      // 保存文章频道列表
+      setArticleChannelList(result.data.channels);
+    };
+  }, []);
+
   const [value, setValue] = useState("");
   return (
     <div className="publish">
@@ -51,7 +65,11 @@ const Publish = () => {
             rules={[{ required: true, message: "请选择文章频道" }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
+              {
+                articleChannelList.map(channel => (
+                  <Option key={nanoid()} value={channel.id}>{channel.name}</Option>
+                ))
+              }
             </Select>
           </Form.Item>
           <Form.Item
