@@ -8,3 +8,12 @@ export const getArticleChannelListAPI = () => {
     method: "get"
   });
 };
+
+// 新增文章
+export const addArticleAPI = (data) => {
+  return request({
+    url: '/mp/articles?draft=false',
+    method: 'post',
+    data
+  })
+}

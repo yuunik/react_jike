@@ -8,33 +8,52 @@ import {
   Upload,
   Space,
   Select,
+  message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { nanoid } from "nanoid";
 import "react-quill/dist/quill.snow.css";
 
 import "./index.scss";
-import { getArticleChannelListAPI } from "@/apis/article";
+import { addArticleAPI, getArticleChannelListAPI } from "@/apis/article";
 
 const { Option } = Select;
 
 const Publish = () => {
+  const navigate = useNavigate();
+
   // 文章频道列表
   const [articleChannelList, setArticleChannelList] = useState([]);
 
   // 组件挂载时调用
   useEffect(() => {
     return async () => {
+      // 调用接口, 获取文章频道列表
       const result = await getArticleChannelListAPI();
       // 保存文章频道列表
       setArticleChannelList(result.data.channels);
     };
   }, []);
 
-  const [value, setValue] = useState("");
+  // 提交表单的回调
+  const onSubmit = async (data) => {
+    // 调用接口, 新增文章
+    await addArticleAPI({
+      ...data,
+      cover: {
+        type: 0,
+        images: []
+      }
+    });
+    // 提示成功信息
+    message.success("发送文章成功!")
+    // 跳转页面
+    navigate('/article')
+  }
+
   return (
     <div className="publish">
       <Card
@@ -51,6 +70,7 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
+          onFinish={onSubmit}
         >
           <Form.Item
             label="标题"
@@ -81,8 +101,6 @@ const Publish = () => {
             <ReactQuill
               className="publish-quill"
               theme="snow"
-              value={value}
-              onChange={setValue}
               placeholder="请输入文章内容"
             />
           </Form.Item>
