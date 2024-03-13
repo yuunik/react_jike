@@ -7,23 +7,29 @@ import {
   Input,
   Upload,
   Space,
-  Select
-} from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
-import './index.scss'
+  Select,
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-const { Option } = Select
+import "./index.scss";
+
+const { Option } = Select;
 
 const Publish = () => {
+  const [value, setValue] = useState("");
   return (
     <div className="publish">
       <Card
         title={
-          <Breadcrumb items={[
-            { title: <Link to={'/'}>首页</Link> },
-            { title: '发布文章' },
-          ]}
+          <Breadcrumb
+            items={[
+              { title: <Link to={"/"}>首页</Link> },
+              { title: "发布文章" },
+            ]}
           />
         }
       >
@@ -35,14 +41,14 @@ const Publish = () => {
           <Form.Item
             label="标题"
             name="title"
-            rules={[{ required: true, message: '请输入文章标题' }]}
+            rules={[{ required: true, message: "请输入文章标题" }]}
           >
             <Input placeholder="请输入文章标题" style={{ width: 400 }} />
           </Form.Item>
           <Form.Item
             label="频道"
             name="channel_id"
-            rules={[{ required: true, message: '请选择文章频道' }]}
+            rules={[{ required: true, message: "请选择文章频道" }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
               <Option value={0}>推荐</Option>
@@ -51,8 +57,17 @@ const Publish = () => {
           <Form.Item
             label="内容"
             name="content"
-            rules={[{ required: true, message: '请输入文章内容' }]}
-          ></Form.Item>
+            rules={[{ required: true, message: "请输入文章内容" }]}
+          >
+            {/* 富文本编辑器 */}
+            <ReactQuill
+              className="publish-quill"
+              theme="snow"
+              value={value}
+              onChange={setValue}
+              placeholder="请输入文章内容"
+            />
+          </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
@@ -64,7 +79,7 @@ const Publish = () => {
         </Form>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default Publish
+export default Publish;
