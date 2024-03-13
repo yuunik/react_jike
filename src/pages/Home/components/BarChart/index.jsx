@@ -37,7 +37,7 @@ const BarChart = ({ chartTitle }) => {
 
     // 设置图表参数
     option && myChart.setOption(option);
-  }, []);
+  }, [chartTitle]);
   return <div className="bar-chart" ref={chartRef}></div>;
 };
 

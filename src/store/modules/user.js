@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { _removeToken, request } from "@/utils";
+import { _removeToken } from "@/utils";
 import { _setToken, _getToken } from "@/utils";
+import { loginAPI, getUserInfoAPI } from "@/apis/user";
 
 const userStore = createSlice({
   name: "userStore",
@@ -40,11 +41,7 @@ const { setToken, setUserInfo, clearUserInfo } = userStore.actions;
 // 完成登录获取 token
 const login = (data) => {
   return async (dispatch) => {
-    const result = await request({
-      url: "/authorizations",
-      method: "post",
-      data,
-    });
+    const result = await loginAPI(data);
     // 保存 token
     dispatch(setToken(result.data.token));
   };
@@ -53,10 +50,7 @@ const login = (data) => {
 // 获取用户信息
 const getUserInfo = () => {
   return async (dispatch) => {
-    const result = await request({
-      url: "/user/profile",
-      method: "get",
-    });
+    const result = await getUserInfoAPI();
     // 保存用户信息
     dispatch(setUserInfo(result.data));
   };
