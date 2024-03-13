@@ -30,29 +30,57 @@ const Publish = () => {
 
   // 组件挂载时调用
   useEffect(() => {
-    return async () => {
+    const getArticleChannelList = async () => {
       // 调用接口, 获取文章频道列表
       const result = await getArticleChannelListAPI();
       // 保存文章频道列表
       setArticleChannelList(result.data.channels);
     };
+    getArticleChannelList();
   }, []);
 
   // 提交表单的回调
   const onSubmit = async (data) => {
+    // 判断图片类型是否与图片数量一致
+    if (imageType !== imageUrlList.length) {
+      return message.warning("图片类型与图片数量不一致!");
+    }
     // 调用接口, 新增文章
     await addArticleAPI({
       ...data,
       cover: {
-        type: 0,
-        images: []
-      }
+        type: imageType,
+        images: imageUrlList,
+      },
     });
     // 提示成功信息
-    message.success("发送文章成功!")
+    message.success("发送文章成功!");
     // 跳转页面
-    navigate('/article')
-  }
+    navigate("/article");
+  };
+
+  // 图片数据列表
+  const [imageUrlList, setImgUrlList] = useState([]);
+
+  // 上传封面的回调
+  const uploadImage = (res) => {
+    // 保存上传封面的地址
+    setImgUrlList(res.fileList.map((file) => file.response?.data?.url));
+  };
+
+  // 图片类型
+  /**
+   *  无图: { type: 0, images: [] }
+   *  单图: { type: 1, images: [“地址1”] }
+   *  三图: { type: 3, images: [“地址1”，‘地址2’，‘地址3’] }
+   */
+  const [imageType, setImageType] = useState(0);
+
+  // 选择图片类型
+  const switchImageType = ({ target: { value: imageType } }) => {
+    // 修改图片类型
+    setImageType(imageType);
+  };
 
   return (
     <div className="publish">
@@ -69,7 +97,7 @@ const Publish = () => {
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ type: 1 }}
+          initialValues={{ type: 0 }}
           onFinish={onSubmit}
         >
           <Form.Item
@@ -85,12 +113,37 @@ const Publish = () => {
             rules={[{ required: true, message: "请选择文章频道" }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              {
-                articleChannelList.map(channel => (
-                  <Option key={nanoid()} value={channel.id}>{channel.name}</Option>
-                ))
-              }
+              {articleChannelList.map((channel) => (
+                <Option key={nanoid()} value={channel.id}>
+                  {channel.name}
+                </Option>
+              ))}
             </Select>
+          </Form.Item>
+          <Form.Item label="封面">
+            <Form.Item name="type">
+              <Radio.Group onChange={switchImageType}>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* 若选择无图, 则组件不显示 */}
+            {imageType !== 0 && (
+              <Upload
+                name="image"
+                listType="picture-card"
+                showUploadList
+                action={"http://geek.itheima.net/v1_0/upload"}
+                onChange={uploadImage}
+                maxCount={imageType}
+                multiple={imageType === 3}
+              >
+                <div style={{ marginTop: 8 }}>
+                  <PlusOutlined />
+                </div>
+              </Upload>
+            )}
           </Form.Item>
           <Form.Item
             label="内容"
