@@ -6,19 +6,26 @@ const userStore = createSlice({
   name: "userStore",
   // 状态初始化
   initialState: {
+    // token 信息
     token: _getToken() || "",
+    // 用户信息
+    userInfo: {},
   },
   reducers: {
     // 设置 token
     setToken: (state, action) => {
       state.token = action.payload;
       // token 持久化
-      _setToken(action.payload)
+      _setToken(action.payload);
+    },
+    // 设置 用户信息
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload;
     },
   },
 });
 
-const { setToken } = userStore.actions;
+const { setToken, setUserInfo } = userStore.actions;
 
 /* 异步 actions */
 // 完成登录获取 token
@@ -34,8 +41,20 @@ const login = (data) => {
   };
 };
 
+// 获取用户信息
+const getUserInfo = () => {
+  return async (dispatch) => {
+    const result = await request({
+      url: "/user/profile",
+      method: "get",
+    });
+    // 保存用户信息
+    dispatch(setUserInfo(result.data));
+  };
+};
+
 // 导出 actions
-export { login };
+export { login, getUserInfo };
 
 const userReducer = userStore.reducer;
 // 导出 reducer
