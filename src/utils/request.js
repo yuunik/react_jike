@@ -1,6 +1,7 @@
 // axios 的封装处理
 import axios from "axios";
-import { _getToken } from "@/utils";
+import { _getToken, _removeToken } from "@/utils";
+import { message } from "antd";
 
 // 项目基地址
 const baseURL = "http://geek.itheima.net/v1_0";
@@ -18,7 +19,7 @@ request.interceptors.request.use(
     // 请求头注入 token
     const token = _getToken();
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -43,6 +44,14 @@ request.interceptors.response.use(
     // Do something with response error
     // 超出 2xx 范围内的状态码都会触发该函数
     // 对响应数据做点什么
+    // 处理 401 错误
+    if (error.response.status === 401) {
+      message.warning("对不起, 您的身份已失效, 请重新登录......");
+      // 清空原有的token
+      _removeToken();
+      // 跳转至登录页
+      window.location.reload()
+    }
     return Promise.reject(error);
   }
 );
