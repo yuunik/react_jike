@@ -7,6 +7,8 @@ import {
   Radio,
   DatePicker,
   Select,
+  Popconfirm,
+  message
 } from "antd";
 // 时间选择器汉化包
 import locale from "antd/es/date-picker/locale/zh_CN";
@@ -19,7 +21,7 @@ import { nanoid } from "nanoid";
 import dayjs from "dayjs";
 
 import { useEffect, useState } from "react";
-import { getArticleListAPI } from "@/apis/article";
+import { getArticleListAPI, deleteArticleByIdAPI } from "@/apis/article";
 
 import useArticleChannel from "@/hooks/useArticleChannel";
 
@@ -27,6 +29,19 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
+  
+
+  // 删除文章
+  const deleteArticle = async (id) => {
+    await deleteArticleByIdAPI(id);
+    // 提示成功信息
+    message.success("文章删除成功!")
+    // 重新渲染页面
+    setReqData({
+      ...reqData
+    })
+  };
+
   // 准备列数据
   const columns = [
     {
@@ -71,12 +86,19 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="确认删除这篇文章吗?"
+              okText="确认"
+              cancelText="取消"
+              onConfirm={() => deleteArticle(data.id)}
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         );
       },

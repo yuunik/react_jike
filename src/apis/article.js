@@ -5,24 +5,32 @@ import { request } from "@/utils";
 export const getArticleChannelListAPI = () => {
   return request({
     url: "/channels",
-    method: "get"
+    method: "get",
   });
 };
 
 // 新增文章
 export const addArticleAPI = (data) => {
   return request({
-    url: '/mp/articles?draft=false',
-    method: 'post',
-    data
-  })
-}
+    url: "/mp/articles?draft=false",
+    method: "post",
+    data,
+  });
+};
 
 // 获取文章列表
 export const getArticleListAPI = (params) => {
   return request({
     url: "/mp/articles",
-    method: 'get',
-    params
-  })
-}
+    method: "get",
+    params,
+  });
+};
+
+// 删除文章
+export const deleteArticleByIdAPI = (id) => {
+  return request({
+    url: `/mp/articles/${id}`,
+    method: "delete", 
+  });
+};
