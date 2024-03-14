@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>极客</title>
     <!-- 设置IE总是使用最新的文档模式进行渲染 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
     <!-- 优先使用 webkit ( Chromium ) 内核进行渲染, 针对360等壳浏览器 -->
-    <meta name="renderer" content="webkit">
+    <meta name="renderer" content="webkit" />
 
     <!-- 字符编码-->
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
 
     <!-- 移动端的适配 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- 网页关键字 -->
-    <meta name="keywords" content="账单/网页">
+    <meta name="keywords" content="账单/网页" />
 
     <!-- 网页描述 -->
-    <meta name="description" content="我是一个账单应用">
-</head>
-<body>
+    <meta name="description" content="我是一个账单应用" />
+  </head>
+  <body>
     <div class="root"></div>
-</body>
+    <!-- 加载第三发包的 CDN 链接 -->
+    <% htmlWebpackPlugin.options.files.js.forEach(cdnURL => { %>
+    <script src="<%= cdnURL %>"></script>
+    <% }) %>
+  </body>
 </html>
