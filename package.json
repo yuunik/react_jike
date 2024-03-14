@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.15.2",
     "axios": "^1.6.7",
+    "dayjs": "^1.11.10",
     "echarts": "^5.5.0",
     "nanoid": "^5.0.6",
     "normalize.css": "^8.0.1",
