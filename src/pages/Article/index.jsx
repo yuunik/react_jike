@@ -95,18 +95,18 @@ const Article = () => {
   // 请求数据
   const [reqData, setReqData] = useState({
     // 文章状态
-    status: '',
+    status: "",
     // 频道分类
-    channel_id: '',
+    channel_id: "",
     // 起始时间
-    begin_pubdate: '',
+    begin_pubdate: "",
     // 结束时间
-    end_pubdate: '',
+    end_pubdate: "",
     // 当前页码
     page: 1,
     // 当前页条数
-    per_page: 4
-  })
+    per_page: 4,
+  });
 
   // 组件挂载时调用
   useEffect(() => {
@@ -133,11 +133,21 @@ const Article = () => {
   const onSubmit = ({ status, date, channel_id }) => {
     // 修改请求参数
     setReqData({
-      ...reqData,
       status,
       channel_id,
       begin_pubdate: dayjs(date[0]).format("YYYY-MM-DD"),
       end_pubdate: dayjs(date[1]).format("YYYY-MM-DD"),
+      page: 1,
+      per_page: 4,
+    });
+  };
+
+  // 切换页面
+  const switchPage = (page) => {
+    // 修改请求参数
+    setReqData({
+      ...reqData,
+      page,
     });
   };
 
@@ -187,7 +197,17 @@ const Article = () => {
       </Card>
       {/* 表格区域 */}
       <Card title={`根据筛选条件共查询到 ${articleCount} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={articleList} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={articleList}
+          pagination={{
+            total: articleCount,
+            current: reqData.page,
+            pageSize: reqData.per_page,
+            onChange: switchPage,
+          }}
+        />
       </Card>
     </div>
   );
