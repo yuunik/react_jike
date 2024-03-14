@@ -12,62 +12,88 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { nanoid } from "nanoid";
 import "react-quill/dist/quill.snow.css";
+import dayjs from "dayjs";
 
-import { addArticleAPI, getArticleInfoAPI } from "@/apis/article";
-import useArticleChannel from '@/hooks/useArticleChannel'
+import { addArticleAPI, getArticleInfoAPI, updateArticleAPI } from "@/apis/article";
+import useArticleChannel from "@/hooks/useArticleChannel";
 import "./index.scss";
 
 const { Option } = Select;
 
 const Publish = () => {
   const navigate = useNavigate();
-  const { articleChannelList } = useArticleChannel()
+  const { articleChannelList } = useArticleChannel();
   const [search] = useSearchParams();
   // 表单实例
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
   // id
-  const articleId = search.get("id")
+  const articleId = search.get("id");
   // 组件挂载后执行
   useEffect(() => {
     if (articleId) {
       // 获取文章详情
       const getArticleInfo = async () => {
-        const { data: { id, title, channel_id, content, cover: { type, images }, pub_date } } = await getArticleInfoAPI(articleId)
+        const {
+          data: {
+            title,
+            channel_id,
+            content,
+            cover: { type, images },
+          },
+        } = await getArticleInfoAPI(articleId);
         // 回显数据
         form.setFieldsValue({
           title,
           channel_id,
           type,
-          content
-        })
+          content,
+        });
         // 回显图片类型
-        setImageType(type)
+        setImageType(type);
         // 回显图片
-        setImgUrlList(images.map(url => ({url})))
-      }
-      getArticleInfo()
+        setImgUrlList(images.map((url) => ({ url })));
+      };
+      getArticleInfo();
     }
-  }, [articleId, form])
+  }, [articleId, form]);
 
   // 提交表单的回调
-  const onSubmit = async (data) => {
+  const onSubmit = async ({ title, content, channel_id, type }) => {
     // 判断图片类型是否与图片数量一致
     if (imageType !== imageUrlList.length) {
       return message.warning("图片类型与图片数量不一致!");
     }
-    // 调用接口, 新增文章
-    await addArticleAPI({
-      ...data,
+
+    // 基础请求数据
+    const reqData = {
+      title,
+      content,
       cover: {
-        type: imageType,
-        images: imageUrlList,
+        type,
+        images: imageUrlList.map((img) =>
+          img.response ? img.response.data.url : img.url
+        ),
       },
-    });
+      channel_id,
+    };
+
+    if (articleId) {
+      // 调用接口, 编辑文章
+      await updateArticleAPI({
+        ...reqData,
+        id: articleId,
+        pub_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      })
+    } else {
+      // 调用接口, 新增文章
+      await addArticleAPI(reqData);
+    }
+
     // 提示成功信息
     message.success("发送文章成功!");
     // 跳转页面
@@ -78,9 +104,9 @@ const Publish = () => {
   const [imageUrlList, setImgUrlList] = useState([]);
 
   // 上传封面的回调
-  const uploadImage = (res) => {
+  const uploadImage = ({ fileList }) => {
     // 保存上传封面的地址
-    setImgUrlList(res.fileList.map((file) => file.response?.data?.url));
+    setImgUrlList(fileList);
   };
 
   // 图片类型
@@ -178,9 +204,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                {
-                  articleId ? "编辑文章" : "发布文章"
-                }
+                {articleId ? "编辑文章" : "发布文章"}
               </Button>
             </Space>
           </Form.Item>

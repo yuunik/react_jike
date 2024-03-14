@@ -42,3 +42,13 @@ export const getArticleInfoAPI = (id) => {
     method: "get", 
   })
 }
+
+// 编辑文章
+export const updateArticleAPI = (data) => {
+  console.log(data);
+  return request({
+    url: `/mp/articles/${data.id}?draft=false`,
+    method: 'put',
+    data
+  })
+}
