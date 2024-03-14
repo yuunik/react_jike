@@ -44,7 +44,7 @@ const Article = () => {
     {
       title: "状态",
       dataIndex: "status",
-      render: (data) => <Tag color="green">审核通过</Tag>,
+      render: status => articleStatusMap[status],
     },
     {
       title: "发布时间",
@@ -101,6 +101,12 @@ const Article = () => {
     };
     getArticleList();
   }, []);
+
+  // 文章状态映射对象
+  const articleStatusMap = {
+    1: <Tag color="warning">待审核</Tag>,
+    2: <Tag color="success">审核通过</Tag>
+  }
 
   return (
     <div>
