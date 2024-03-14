@@ -34,3 +34,11 @@ export const deleteArticleByIdAPI = (id) => {
     method: "delete", 
   });
 };
+
+// 获取文章详情
+export const getArticleInfoAPI = (id) => {
+  return request({
+    url: `/mp/articles/${id}`,
+    method: "get", 
+  })
+}

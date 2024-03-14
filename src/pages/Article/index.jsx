@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   Breadcrumb,
@@ -29,7 +29,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
-  
+  const navigate = useNavigate();
 
   // 删除文章
   const deleteArticle = async (id) => {
@@ -85,7 +85,7 @@ const Article = () => {
       render: (data) => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={ () => navigate(`/publish?id=${data.id}`)} />
             <Popconfirm
               title="确认删除这篇文章吗?"
               okText="确认"

@@ -11,13 +11,13 @@ import {
   message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
-import React, {  useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, {  useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { nanoid } from "nanoid";
 import "react-quill/dist/quill.snow.css";
 
-import { addArticleAPI } from "@/apis/article";
+import { addArticleAPI, getArticleInfoAPI } from "@/apis/article";
 import useArticleChannel from '@/hooks/useArticleChannel'
 import "./index.scss";
 
@@ -26,6 +26,33 @@ const { Option } = Select;
 const Publish = () => {
   const navigate = useNavigate();
   const { articleChannelList } = useArticleChannel()
+  const [search] = useSearchParams();
+  // 表单实例
+  const [form] = Form.useForm()
+
+  // id
+  const articleId = search.get("id")
+  // 组件挂载后执行
+  useEffect(() => {
+    if (articleId) {
+      // 获取文章详情
+      const getArticleInfo = async () => {
+        const { data: { id, title, channel_id, content, cover: { type, images }, pub_date } } = await getArticleInfoAPI(articleId)
+        // 回显数据
+        form.setFieldsValue({
+          title,
+          channel_id,
+          type,
+          content
+        })
+        // 回显图片类型
+        setImageType(type)
+        // 回显图片
+        setImgUrlList(images.map(url => ({url})))
+      }
+      getArticleInfo()
+    }
+  }, [articleId, form])
 
   // 提交表单的回调
   const onSubmit = async (data) => {
@@ -77,7 +104,7 @@ const Publish = () => {
           <Breadcrumb
             items={[
               { title: <Link to={"/"}>首页</Link> },
-              { title: "发布文章" },
+              { title: articleId ? "编辑文章" : "发布文章" },
             ]}
           />
         }
@@ -87,6 +114,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 0 }}
           onFinish={onSubmit}
+          form={form}
         >
           <Form.Item
             label="标题"
@@ -126,6 +154,7 @@ const Publish = () => {
                 onChange={uploadImage}
                 maxCount={imageType}
                 multiple={imageType === 3}
+                fileList={imageUrlList}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
@@ -149,7 +178,9 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {
+                  articleId ? "编辑文章" : "发布文章"
+                }
               </Button>
             </Space>
           </Form.Item>
